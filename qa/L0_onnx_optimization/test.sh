@@ -107,6 +107,21 @@ for MODEL in \
             parameters { key: \"trt_engine_cache_enable\" value: \"1\" } \
             parameters { key: \"trt_engine_cache_path\" value: \"${CACHE_PATH}\" } }]}}" \
             >> config.pbtxt) && \
+    # GPU execution accelerators with more parameters
+    cp -r models/${MODEL}_test models/${MODEL}_cache_on && \
+    (cd models/${MODEL}_cache_on && \
+            sed -i 's/_float32_test/_float32_cache_on/' \
+                config.pbtxt && \
+            echo "optimization { execution_accelerators { gpu_execution_accelerator : [ { name : \"tensorrt\" \
+            parameters { key: \"max_workspace_size_bytes\" value: \"4294967296\" } \
+            parameters { key: \"trt_max_partition_iterations\" value: \"1000\" } \
+            parameters { key: \"trt_dump_subgraphs\" value: \"1\" } \
+            parameters { key: \"trt_timing_cache_enable\" value: \"1\" } \
+            parameters { key: \"trt_build_heuristics_enable\" value: \"1\" } \
+            parameters { key: \"trt_cuda_graph_enable\" value: \"1\" } \
+            parameters { key: \"trt_engine_cache_enable\" value: \"1\" } \
+            parameters { key: \"trt_engine_cache_path\" value: \"${CACHE_PATH}\" } }]}}" \
+            >> config.pbtxt) && \
     # GPU execution accelerators with unknown parameters
     cp -r models/${MODEL}_test models/${MODEL}_unknown_param && \
     (cd models/${MODEL}_unknown_param && \
